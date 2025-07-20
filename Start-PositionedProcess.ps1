@@ -79,7 +79,7 @@ public class Win32 {
         }
     }
 
-    if (fa-not $targetProc) {
+    if (-not $targetProc) {
         Write-Warning "ウィンドウを持つプロセスが見つかりませんでした"
         return
     }
@@ -89,4 +89,5 @@ public class Win32 {
     Write-Host "ウィンドウを移動しました: (${finalX},${finalY}) サイズ: ${winW}x${winH}"
 }
 
-#Start-PositionedProcess 1920x480-0x0-300x200 powershell
+Set-Alias spp Start-PositionedProcess
+#spp 1920x480-0x0-300x200 powershell
