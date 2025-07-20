@@ -39,7 +39,9 @@ public class Win32 {
 
     if (-not $targetScreen) {
         Write-Error "指定サイズのモニタが見つかりませんでした: ${dispW}x${dispH}"
-        return
+        $targetScreens = [System.Windows.Forms.Screen]::AllScreens
+        $targetScreen = $targetScreens[0]
+        #return
     }
 
     $baseX = $targetScreen.Bounds.X
@@ -67,7 +69,7 @@ public class Win32 {
                 ($_.Path -and
                  [System.IO.Path]::GetFileNameWithoutExtension($_.Path).ToLowerInvariant() -eq $exeBase) -or
                 (
-                    $exeBase -in @("cmd", "powershell", "bash") -and
+                    $exeBase -in @("wt", "wsl", "cmd", "powershell", "bash") -and
                     $_.Name -like "WindowsTerminal*"
                 )
             )
@@ -82,12 +84,15 @@ public class Win32 {
     if (-not $targetProc) {
         Write-Warning "ウィンドウを持つプロセスが見つかりませんでした"
         return
+        Start-Sleep -Milliseconds 500000
+        return
     }
 
     # 移動とサイズ変更
     [Win32]::MoveWindow($targetProc.MainWindowHandle, $finalX, $finalY, $winW, $winH, $true) | Out-Null
     Write-Host "ウィンドウを移動しました: (${finalX},${finalY}) サイズ: ${winW}x${winH}"
+    return
 }
 
 Set-Alias spp Start-PositionedProcess
-#spp 1920x480-0x0-300x200 powershell
+#Start-PositionedProcess '1920x480-0x0-1620x440' wt.exe -p "Windows PowerShell"
